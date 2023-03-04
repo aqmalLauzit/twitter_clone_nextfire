@@ -34,8 +34,10 @@ export default function Home({ newsResults, randomUsersResults }) {
 
 export async function getServerSideProps() {
   const newsResults = await fetch(
-    "https://saurav.tech/NewsAPI/top-headlines/category/business/us.json"
+    `https://newsapi.org/v2/top-headlines?country=id&category=sports&apiKey=${process.env.NEXT_PUBLIC_NEWS_API_KEY}`
   ).then((res) => res.json());
+
+
 
   // Who to follow section
 

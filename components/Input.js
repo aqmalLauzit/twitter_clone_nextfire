@@ -1,11 +1,18 @@
 import { EmojiHappyIcon, PhotographIcon } from "@heroicons/react/outline";
+import { useSession } from "next-auth/react";
+
 
 export default function Input() {
+  const {data : session} = useSession();
+
+  
   return (
-    <div className="flex  border-b border-gray-200 p-3 space-x-3">
+    <>
+    {session && (
+      <div className="flex  border-b border-gray-200 p-3 space-x-3">
       <img
-        src="https://www.adscientificindex.com/pictures/0b/50734.jpg"
-        alt="user-img"
+        src={session?.user?.image}
+        alt={`Foto profile ${session?.user?.name}`}
         className="h-11 w-11 rounded-full cursor-pointer hover:brightness-95"
       />
       <div className="w-full divide-y divide-gray-200">
@@ -21,5 +28,9 @@ export default function Input() {
         </div>
       </div>
     </div>
+    )}
+    
+    </>
+    
   );
 }
