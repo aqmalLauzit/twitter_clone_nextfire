@@ -55,10 +55,10 @@ export default function Input() {
     setInput("");
   }
   
-  const addImageToPost = async(e) => {
+  const addImageToPost = (e) => {
     const reader =  new FileReader();
     if (e.target.files[0]){
-      await reader.readAsDataURL(e.target.files[0])
+       reader.readAsDataURL(e.target.files[0])
     }
 
     reader.onload = (readerEvent) => {
