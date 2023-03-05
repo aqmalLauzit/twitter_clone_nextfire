@@ -56,7 +56,10 @@ export default function Post({ post }) {
       //delete document dari koneksi db, collection posts, where posts.id = post.id
       deleteDoc(doc(db, "posts", post.id))
     //delete gambar
+    if(post.data()?.image){
+
       deleteObject(ref(storage, `posts/${post.id}/image`))
+    }
     }
     
   }
