@@ -9,11 +9,12 @@ import {
 } from "@heroicons/react/outline";
 import { HeartIcon as HeartIconFilled } from "@heroicons/react/solid"; 
 import { collection, deleteDoc, doc, onSnapshot, setDoc } from "firebase/firestore";
+import { deleteObject, ref } from "firebase/storage";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import Moment from "react-moment";
-import { db } from "../firebase";
+import { db, storage } from "../firebase";
 
 export default function Post({ post }) {
 
@@ -49,6 +50,18 @@ export default function Post({ post }) {
 
     
   }
+
+  const deletePost = () => {
+    if(window.confirm("Yakin akan menghapus postingan?")) {
+      //delete document dari koneksi db, collection posts, where posts.id = post.id
+      deleteDoc(doc(db, "posts", post.id))
+    //delete gambar
+      deleteObject(ref(storage, `posts/${post.id}/image`))
+    }
+    
+  }
+
+
   return (
     <div className="flex p-3 cursor-pointer border-b border-gray-200">
       {/* user image */}
@@ -95,7 +108,10 @@ export default function Post({ post }) {
 
         <div className="flex justify-between text-gray-500 p-2">
           <ChatIcon className="h-9 w-9 hoverEffect p-2 hover:text-sky-500 hover:bg-sky-100" />
-          <TrashIcon className="h-9 w-9 hoverEffect p-2 hover:text-red-600 hover:bg-red-100" />
+          {session?.user?.uid === post.data().id && (
+
+          <TrashIcon onClick={deletePost} className="h-9 w-9 hoverEffect p-2 hover:text-red-600 hover:bg-red-100" />
+          )}
           <div className="flex items-center">
 
           
