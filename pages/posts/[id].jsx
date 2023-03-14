@@ -1,9 +1,10 @@
 import { ArrowLeftIcon, SparklesIcon } from "@heroicons/react/outline";
-import { doc, onSnapshot } from "firebase/firestore";
+import { collection, doc, onSnapshot, orderBy, query } from "firebase/firestore";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import CommentModal from "../../components/CommentModal";
+import CommentsComponent from "../../components/CommentsComponent";
 import Post from "../../components/Post";
 import Sidebar from "../../components/Sidebar";
 import Widgets from "../../components/Widgets";
@@ -13,13 +14,19 @@ export default function PostPage({ newsResults, randomUsersResults }) {
   const router = useRouter();
   const {id} = router.query;
   const [post,setPost] = useState();
+  const [comments,setComments] = useState([]);
 
   useEffect(
     () => onSnapshot(doc(db, "posts", id), (snapshot) => setPost(snapshot)),
     [db, id]
   );
 
-  console.log(post);
+  //get comments
+  useEffect(() => {
+    onSnapshot(query(collection(db, "posts",id,"comments"), orderBy("timestamp","desc")), (snapshot) => setComments(snapshot.docs))
+  },[db,id])
+
+  console.log(comments);
   return (
     <div>
       <Head>
@@ -45,6 +52,17 @@ export default function PostPage({ newsResults, randomUsersResults }) {
       </div>
 {post && (
   <Post id={id} post={post}/>
+)}
+
+{comments.length > 0 && (
+  <div>
+  {comments.map((comment) => (
+    <>
+
+    <CommentsComponent comment={comment} key={comment.id} id={comment.id}/>
+    </>
+  ))}
+  </div>
 )}
       
       
