@@ -10,12 +10,12 @@ import {
 import { HeartIcon as HeartIconFilled } from "@heroicons/react/solid"; 
 import { collection, deleteDoc, doc, onSnapshot, setDoc } from "firebase/firestore";
 import { deleteObject, ref } from "firebase/storage";
-import { useSession } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import Moment from "react-moment";
 import { useRecoilState } from "recoil";
-import { modalState } from "../atom/modalAtom";
+import { modalState, postIdState } from "../atom/modalAtom";
 import { db, storage } from "../firebase";
 
 
@@ -26,6 +26,7 @@ export default function Post({ post }) {
   const [likes,setLikes] = useState([]);
   const [hasLiked,setHasLiked] = useState(false);
   const [open, setOpen] = useRecoilState(modalState);
+  const [postId, setPostId] = useRecoilState(postIdState);
 
   useEffect(() => {
     const unsubcribe = onSnapshot(
@@ -115,7 +116,15 @@ export default function Post({ post }) {
 
         <div className="flex justify-between text-gray-500 p-2">
           <ChatIcon className="h-9 w-9 hoverEffect p-2 hover:text-sky-500 hover:bg-sky-100" 
-            onClick={() => setOpen(!open)}
+            onClick={() => {
+              if(!session) {
+                signIn()
+              } else{
+                setPostId(post.id)
+                setOpen(!open)
+              }
+              
+            }}
           />
           {session?.user?.uid === post.data().id && (
 
