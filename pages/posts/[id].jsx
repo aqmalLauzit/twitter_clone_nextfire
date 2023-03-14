@@ -1,5 +1,6 @@
 import { ArrowLeftIcon, SparklesIcon } from "@heroicons/react/outline";
 import { collection, doc, onSnapshot, orderBy, query } from "firebase/firestore";
+import { AnimatePresence, motion } from "framer-motion";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
@@ -56,12 +57,17 @@ export default function PostPage({ newsResults, randomUsersResults }) {
 
 {comments.length > 0 && (
   <div>
+    <AnimatePresence>
   {comments.map((comment) => (
     <>
-
-    <CommentsComponent comment={comment} key={comment.id} id={comment.id}/>
+<motion.div key={comment.id} initial={{opacity:0}}  animate={{opacity: 1}} exit={{opacity: 0}}
+        transition={{duration: 1}}
+        >
+    <CommentsComponent comment={comment} commentId={comment.id} originalPostId={id}/>
+    </motion.div>
     </>
   ))}
+  </AnimatePresence>
   </div>
 )}
       
